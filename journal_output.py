@@ -17,11 +17,24 @@ class healthJournal:
         self.duration = duration
         #include medication_list 
         
+    def missed_days(self):
+        """takes in missed days from history class to take note of deviations user took from their medication schedule"""  
         
+          
     def journal_output(self):
         """uses object to create text file of journal that considers all of the attributes, goes one medication at a time
         Returns:
-            medication_journal.txt file"""
+            journal_output, a string that will be used to create the file medication_journal.txt
+        Will look something like this:
+        
+        “On Day {x}, you took {dosage} of medication {name} {frequency} times, {dosage} of medication {name} 
+        {frequency} times, {dosage} of medication {name} {frequency} times…
+
+        On Day {x+1}...”
+
+        Misses:
+        “On Day {x} you missed {name}, on day {x} you missed….”
+        """
         
         day_text = []
         
@@ -29,3 +42,9 @@ class healthJournal:
             for x in range(1, last_day):
                 last_day = self.duration
                 text = f"On Day {x}, you took {self.dosage} of medication {self.name} {self.frequency} times"
+                
+if __name__=="__main__":
+    user_journal = journal_output("...")  
+    
+    with open("medication_journal", "w") as file:
+        file.write(user_journal)  
