@@ -58,6 +58,9 @@ class User:
             note (str): Optional note to include with the log entry (e.g., side effects, reasons for missing). Defaults to empty string.
 
         """
+        med = next((m for m in self.medications if m.name.lower() == medication_name.lower()), None)
+        if med and taken:
+            med.remaining_doses = max(0, med.remaining_doses - 1)
         self.journal.log(medication_name, taken, note)
     
     def get_next_dose_time(self) -> dict[str, tuple[str, datetime]]:
