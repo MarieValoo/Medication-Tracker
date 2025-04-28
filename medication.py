@@ -9,6 +9,7 @@ class Medication:
         dosage (str): The dosage amount of the medication (e.g., "10mg", "500mg").
         frequency_per_day (int): Number of times the medication should be taken daily.
         times (list[str]): List of specific times the medication should be taken each day.
+        #duration (int): amount of days the medication should be taken to completion - Marie V.
         remaining_doses (int): Number of doses remaining of the medication.
     """
     
