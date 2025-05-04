@@ -2,20 +2,19 @@
 #Marie Valouiski
 #INST326 Final Project
 
+from medication import Medication
+
 class healthJournal:
-    """takes in medication_list, which contains the name, dosage, frequency, and amount of days of each medication
-    included in the list to create full journal of what it would look like if the user took all the medication according 
+    """takes in a Medication object (assumed to be a list of dictionaries with the name of each 
+    dictionairy being the medication name and the keys and values being the dosage[str], frequency_per_day[int], 
+    times[list], duration[int], and remaining_doses[int]) to create full journal of what it would look like if the user took all the medication according 
     to the prescription directions
     Attributes:
-        self, medication_list which will probably come from Medication class using composition
-        Output of Registers Medication"""
+        Medication Object """
         
-    def __init__(self, name, dosage, frequency, duration, medication_list): 
-        self.name = name
-        self.dosage = dosage
-        self.frequency = frequency
-        self.duration = duration
-        #include medication_list 
+    def __init__(self, medication_object): 
+        self.medication_object = medication_object
+        
         
     def missed_days(self):
         """takes in missed days from history class to take note of deviations user took from their medication schedule"""  
@@ -23,6 +22,8 @@ class healthJournal:
           
     def journal_output(self):
         """uses object to create text file of journal that considers all of the attributes, goes one medication at a time
+        Attribute:
+            self (Medication object)
         Returns:
             journal_output, a string that will be used to create the file medication_journal.txt
         Will look something like this:
@@ -36,15 +37,49 @@ class healthJournal:
         “On Day {x} you missed {name}, on day {x} you missed….”
         """
         
-        day_text = []
+        assert type(self.medication_object) == Medication
         
-        for med in medication_list:
-            for x in range(1, last_day):
-                last_day = self.duration
-                text = f"On Day {x}, you took {self.dosage} of medication {self.name} {self.frequency} times"
+        day_text = [] #where the journal f string texts will go
+        medication_list = [] #where all medication names will go, once the duration of a medication goes to zero the medication name will be removed from the list
+        count = 0 #tracks the amount of days that the journal goes through
+        
+        for medication in self.medication_object:
+            medication_list.append(medication) #appends all medication names to the medication_list variable
+            
+        duration_list = []
+        for details in self.medicines_object.values():
+            duration = details.get("duration")
+            duration_list.append(duration)
+        final_day = max(duration_list) #finds the last day a medication(s) will be taken    
+
+        while count >= final_day:
+            count += 1
+            text_container = ""
+            for medication, information in self.medecines_object.items():
+                if medication not in medication_list: #check to make sure medication is not used up
+                    continue
+                
+                dosage = None
+                frequency = None
+                
+                dosage = information.get("dosage")
+                frequency = information.get("frequency_per_day")
+                duration = information.get("duration")
+                
+                if dosage is not None and frequency is not None:
+                    text_container = text_container + " " + f"{dosage} of {medication} {frequency} times,"
+                    
+                if duration == count: #if this is the last day to take a medication, remove it from medication_list after its last use
+                    medication_list.remove(medication)
+                            
+            text_container = f"On day {count}, you took " + text_container
+            text_container = text_container[:-1] + "."
+            day_text.append(text_container)
+            
                 
 if __name__=="__main__":
     user_journal = journal_output("...")  
     
     with open("medication_journal", "w") as file:
         file.write(user_journal)  
+
