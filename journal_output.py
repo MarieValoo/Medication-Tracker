@@ -18,7 +18,10 @@ class healthJournal:
         
     def missed_days(self):
         """takes in missed days from history class to take note of deviations user took from their medication schedule"""  
-        
+        #just needs the DAY on which a medication is missed, and the NAME of the medication is missed. this could be in whatever 
+        #form you think is best, such as a list of tuples where the first index of the tuple is the day(int), and the second 
+        #index is the medciation name(str) that was missed on that day. it doesn't have to be like that just as long as 
+        #we have variables that store this information that I could use in the journal_output function
           
     def journal_output(self):
         """uses object to create text file of journal that considers all of the attributes, goes one medication at a time
