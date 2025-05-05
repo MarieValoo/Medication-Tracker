@@ -13,17 +13,28 @@ class Medication:
         remaining_doses (int): Number of doses remaining of the medication.
     """
     
-    def add_medication(self):
-        """
-        Adds a new medication to the system.
-        """
-        pass
+    def __init__(self, name: str, dosage: str, frequency_per_day: int, times: list[str], remaining_doses: int):
+        self.name = name
+        self.dosage = dosage
+        self.frequency_per_day = frequency_per_day
+        self.times = times  # e.g., ["08:00", "14:00", "20:00"]
+        self.remaining_doses = remaining_doses
     
-    def remove_medication(self):
+    def add_medication(self, amount):
         """
-        Removes a medication from the system.
+        Adds more doses to a previously listed medication.
+        Args:
+            amount (int): The amount you want to increase the medication by (in doses).
         """
-        pass
+        self.remaining_doses += amount
+    
+    def remove_medication(self, amount):
+        """
+        Removes doses from a previously listed medication.
+        Args:
+            amount (int): The amount you want to decrease the medication by (in doses).
+        """
+        self.remaining_doses -= amount
     
     def check_interactions(self, other_medications: list["Medication"]) -> list[dict]:
         """
@@ -38,7 +49,7 @@ class Medication:
         """
         pass
     
-    def get_next_dose_time(self) -> tuple[str, datetime]:
+    def get_next_dose(self) -> tuple[str, datetime]:
         """
         Returns the next scheduled time to take the medication.
         
@@ -46,4 +57,12 @@ class Medication:
             tuple[str, datetime]: A tuple containing the formatted time string and the 
             datetime object of the next scheduled dose.
         """
-        pass
+        now = datetime.now()
+        today_times = [datetime.strptime(t, "%H:%M").replace(year=now.year, month=now.month, day=now.day) for t in self.times]
+        future_times = [t for t in today_times if t > now]
+        if future_times:
+            return future_times[0]
+        else:
+            # Return first dose tomorrow
+            tomorrow_time = datetime.strptime(self.times[0], "%H:%M") + timedelta(days=1)
+            return tomorrow_time.replace(year=now.year, month=now.month, day=(now.day + 1))
