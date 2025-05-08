@@ -2,18 +2,24 @@
 #Marie Valouiski
 #INST326 Final Project
 
-from medication import Medication
+from user import User 
 
-class healthJournal:
-    """takes in a Medication object (assumed to be a list of dictionaries with the name of each 
+#create a function that takes in medications (list of medication objects) from User class and makes a list of dictionaries 
+#acceptable for HealthJournal class
+
+#ill probably add medications to input in init of HealthJournal
+
+
+class HealthJournal:
+    """takes in medication_list (a list of dictionaries containing Medication objects (from User class) with the name of each 
     dictionairy being the medication name and the keys and values being the dosage[str], frequency_per_day[int], 
     times[list], duration[int], and remaining_doses[int]) to create full journal of what it would look like if the user took all the medication according 
     to the prescription directions
     Attributes:
-        Medication Object """
+        medication_list """
         
-    def __init__(self, medication_object): 
-        self.medication_object = medication_object
+    def __init__(self, medication_list): 
+        self.medication_list = medication_list
         
         
     def missed_days(self):
@@ -40,7 +46,8 @@ class healthJournal:
         “On Day {x} you missed {name}, on day {x} you missed….”
         """
         
-        assert type(self.medication_object) == Medication
+        #assert type(self.medication_object) == Medication
+        #makes an assert statement that checks that the structure of the input is correct
         
         day_text = [] #where the journal f string texts will go
         medication_list = [] #where all medication names will go, once the duration of a medication goes to zero the medication name will be removed from the list

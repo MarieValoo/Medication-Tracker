@@ -1,6 +1,6 @@
 from datetime import datetime
 from medication import Medication
-from health_journal import healthJournal
+from health_journal import HealthJournal
 
 class User:
     """
@@ -21,7 +21,7 @@ class User:
         """
         self.name = name
         self.medications: list[Medication] = []
-        self.journal = healthJournal()
+        self.journal = HealthJournal()
     
     def add_medication(self, medication: Medication):
         """
