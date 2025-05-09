@@ -2,6 +2,14 @@
 from user import User
 from medication import Medication
 
+# Delete or rename the old history file to start fresh
+# Eventually I would think that we remove the history file, or make it empty, but this is a temp solution
+if os.path.exists("history.json"):
+    # Option 1: Delete the file
+    os.remove("history.json")
+    # Option 2: Rename it to keep a backup
+    # os.rename("history.json", "history_backup.json")
+
 # Create user
 user = User("Alice")
 
