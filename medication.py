@@ -37,19 +37,6 @@ class Medication:
         """
         self.remaining_doses -= amount
     
-    def check_interactions(self, other_medications: list["Medication"]) -> list[dict]:
-        """
-        Checks for potential interactions with other medications.
-        
-        Args:
-            other_medications (list[Medication]): List of other medications to check against.
-            
-        Returns:
-            list[dict]: List of interaction details, where each dict contains information about 
-            the interaction severity, description, and involved medications.
-        """
-        pass
-    
     def get_next_dose(self) -> tuple[str, datetime]:
         """
         Returns the next scheduled time to take the medication.
