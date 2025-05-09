@@ -37,23 +37,40 @@ class Medication:
         """
         self.remaining_doses -= amount
     
-    def get_next_dose(self) -> tuple[str, datetime]:
+    def get_next_dose(self):
         """
         Returns the next scheduled time to take the medication.
         
         Returns:
-            tuple[str, datetime]: A tuple containing the formatted time string and the 
-            datetime object of the next scheduled dose.
+            datetime: A datetime object of the next scheduled dose.
         """
+        if self.remaining_doses <= 0:
+            return None  # No doses remaining
+            
         now = datetime.now()
-        today_times = [datetime.strptime(t, "%H:%M").replace(year=now.year, month=now.month, day=now.day) for t in self.times]
+        
+        # Convert time strings to datetime objects for today
+        today_times = []
+        for time_str in self.times:
+            time_parts = time_str.split(":")
+            hour = int(time_parts[0])
+            minute = int(time_parts[1])
+            time_obj = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+            today_times.append(time_obj)
+        
+        # Find future times for today
         future_times = [t for t in today_times if t > now]
+        
         if future_times:
-            return future_times[0]
+            # Return the next available time today
+            return min(future_times)
         else:
-            # Return first dose tomorrow
-            tomorrow_time = datetime.strptime(self.times[0], "%H:%M") + timedelta(days=1)
-            return tomorrow_time.replace(year=now.year, month=now.month, day=(now.day + 1))
+            # Return the first dose time for tomorrow
+            tomorrow = now + timedelta(days=1)
+            time_parts = self.times[0].split(":")
+            hour = int(time_parts[0])
+            minute = int(time_parts[1])
+            return tomorrow.replace(hour=hour, minute=minute, second=0, microsecond=0)  
 
     def __repr__(self):
         return (f"Medication(name='{self.name}', dosage='{self.dosage}', "
