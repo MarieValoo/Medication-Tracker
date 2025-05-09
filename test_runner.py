@@ -6,7 +6,7 @@ from medication import Medication
 user = User("Alice")
 
 # Add medications
-med1 = Medication(name="Ibuprofen", dosage="200mg", frequency_per_day=2, times=["09:00", "21:00"], remaining_doses=12)
+med1 = Medication(name="Ibuprofen", dosage="200mg", frequency_per_day=2, times=["09:00", "21:00"], duration=30, remaining_doses=12)
 user.add_medication(med1)
 
 # Log a dose
