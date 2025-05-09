@@ -9,15 +9,16 @@ class Medication:
         dosage (str): The dosage amount of the medication (e.g., "10mg", "500mg").
         frequency_per_day (int): Number of times the medication should be taken daily.
         times (list[str]): List of specific times the medication should be taken each day.
-        #duration (int): amount of days the medication should be taken to completion - Marie V.
+        duration (int): amount of days the medication should be taken to completion.
         remaining_doses (int): Number of doses remaining of the medication.
     """
     
-    def __init__(self, name: str, dosage: str, frequency_per_day: int, times: list[str], remaining_doses: int):
+    def __init__(self, name: str, dosage: str, frequency_per_day: int, times: list[str], duration: int, remaining_doses: int):
         self.name = name
         self.dosage = dosage
         self.frequency_per_day = frequency_per_day
         self.times = times  # e.g., ["08:00", "14:00", "20:00"]
+        self.duration = duration
         self.remaining_doses = remaining_doses
     
     def add_medication(self, amount):
@@ -66,3 +67,8 @@ class Medication:
             # Return first dose tomorrow
             tomorrow_time = datetime.strptime(self.times[0], "%H:%M") + timedelta(days=1)
             return tomorrow_time.replace(year=now.year, month=now.month, day=(now.day + 1))
+
+    def __repr__(self):
+        return (f"Medication(name='{self.name}', dosage='{self.dosage}', "
+                f"frequency_per_day={self.frequency_per_day}, times={self.times}, "
+                f"duration={self.duration}, remaining_doses={self.remaining_doses})")
