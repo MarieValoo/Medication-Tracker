@@ -62,6 +62,37 @@ class User:
         if med and taken:
             med.remaining_doses = max(0, med.remaining_doses - 1)
         self.journal.log(medication_name, taken, note)
+
+    def check_all_interactions(self):
+        """
+        Checks and prints potential drug interactions among the user's medications.
+        """
+        print("\nChecking for drug interactions:")
+        reported_pairs = set() # Keep track of already-reported interactions
+        found = False # Marking a found interaction
+
+        for i, med in enumerate(self.medications):
+            others = self.medications[:i] + self.medications[i+1:]
+            for other in others:
+                # Try to find interaction info using both possible pair orders
+                pair = (med.name, other.name)
+                reverse_pair = (other.name, med.name)
+                interaction_info = interaction_db.get(pair) or interaction_db.get(reverse_pair)
+
+                if interaction_info:
+                    # Sort names to standardize key (so A+B is same as B+A)
+                    name1, name2 = sorted([med.name, other.name])
+                    key = f"{name1}+{name2}"
+
+                    # Only report each interaction once
+                    if key not in reported_pairs:
+                        reported_pairs.add(key)
+                        found = True
+                        # Print the interaction information
+                        print(f"- {name1} + {name2}: {interaction_info['description']} (Severity: {interaction_info['severity']})")
+
+        if not found:
+            print("No interactions found.")
     
     def get_next_dose_time(self) -> dict[str, tuple[str, datetime]]:
         """
