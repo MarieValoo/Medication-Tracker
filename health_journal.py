@@ -96,7 +96,6 @@ if __name__ == '__main__':
 
 #yes 
 
-import datetime
 
 class SendReminders:
     def __init__(self, user):
