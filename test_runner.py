@@ -1,6 +1,7 @@
 # test_runner.py
 from user import User
 from medication import Medication
+import os
 
 # Delete or rename the old history file to start fresh
 # Eventually I would think that we remove the history file, or make it empty, but this is a temp solution
@@ -15,7 +16,12 @@ user = User("Alice")
 
 # Add medications
 med1 = Medication(name="Ibuprofen", dosage="200mg", frequency_per_day=2, times=["09:00", "21:00"], duration=30, remaining_doses=12)
+med2 = Medication(name="Lisinopril", dosage="200mg", frequency_per_day=2, times=["09:00", "21:00"], duration=30, remaining_doses=12)
 user.add_medication(med1)
+user.add_medication(med2)
+
+# Check interactions
+user.check_all_interactions()
 
 # Log a dose
 user.take_medication("Ibuprofen", taken=True, note="No side effects")
