@@ -48,20 +48,44 @@ class User:
                 return True
         return False
     
+    def find_medication(self, medication_name: str):
+        """
+        Finds a medication in the user's list by name.
+        
+        Args:
+            medication_name (str): The name of the medication to find.
+            
+        Returns:
+            The medication object if found, None otherwise. 
+        """
+        for med in self.medications:
+            if med.name.lower() == medication_name.lower():
+                return med
+        return None
+    
     def take_medication(self, medication_name: str, taken: bool = True, note: str = ""):
         """
-        Logs the intake of a medication in the user's medication history.
-
+        Records that a medication was taken or missed.
+        
         Args:
-            medication_name (str): The name of the medication being taken or missed.
-            taken (bool): Indicates whether the medication was taken (True) or missed (False). Defaults to True.
-            note (str): Optional note to include with the log entry (e.g., side effects, reasons for missing). Defaults to empty string.
-
+            medication_name (str): The name of the medication being taken/missed.
+            taken (bool): Indicates whether the medication was taken (True) or missed (False).
+            note (str): Optional note to include (e.g., side effects).
+            
+        Returns:
+            bool: True if the medication was found and the action was recorded, False otherwise.
         """
-        med = next((m for m in self.medications if m.name.lower() == medication_name.lower()), None)
-        if med and taken:
-            med.remaining_doses = max(0, med.remaining_doses - 1)
-        self.journal.log(medication_name, taken, note)
+        medication = self.find_medication(medication_name)
+        
+        if medication:
+            # Record in journal
+            self.journal.log(medication_name, taken, note)
+            
+            # Update dose count if taken
+            if taken and medication.remaining_doses > 0:
+                medication.decrease_dose_count(1)
+            return True
+        return False
 
     def check_all_interactions(self):
         """
