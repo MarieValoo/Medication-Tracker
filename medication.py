@@ -21,21 +21,24 @@ class Medication:
         self.duration = duration
         self.remaining_doses = remaining_doses
     
-    def add_medication(self, amount):
+    def increase_dose_count(self, amount):
         """
         Adds more doses to a previously listed medication.
         Args:
             amount (int): The amount you want to increase the medication by (in doses).
         """
         self.remaining_doses += amount
+        return self.remaining_doses
     
-    def remove_medication(self, amount):
+    def decrease_dose_count(self, amount):
         """
         Removes doses from a previously listed medication.
         Args:
             amount (int): The amount you want to decrease the medication by (in doses).
         """
-        self.remaining_doses -= amount
+        if self.remaining_doses >= amount:
+            self.remaining_doses -= amount
+        return self.remaining_doses
     
     def get_next_dose(self):
         """
