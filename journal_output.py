@@ -80,7 +80,12 @@ class HealthJournal:
         duration_list = []
         for details in self.medication_dict.values():
             duration = details.get("duration")
-            duration_list.append(duration)
+            
+            if duration > 100:
+                duration_list.append(100)
+            else: 
+                duration_list.append(duration)
+                
         final_day = max(duration_list) #finds the last day a medication(s) will be taken    
 
         while count >= final_day:
@@ -104,13 +109,13 @@ class HealthJournal:
                     medication_list.remove(medication)
                             
             text_container = f"On day {count}, you took " + text_container
-            text_container = text_container[:-1] + "."
+            text_container = text_container[:-1] + "." + "\n" + "\n"
             day_text.append(text_container)
             
+        with open("medication_journal", "w") as file:
+            file.write(day_text)
+        
+        print("File 'medication_journal' successfully created!")
                 
-if __name__=="__main__":
-    user_journal = journal_output("...")  
-    
-    with open("medication_journal", "w") as file:
-        file.write(user_journal)  
+
 
