@@ -1,10 +1,3 @@
-#can ya'll see this
-
-#yes 
-
-#####################################################
-#Tracks Medication History
-#####################################################
 #!/usr/bin/env python3
 """
 medication_history.py
@@ -13,6 +6,7 @@ Simple CLI tracker for logging and viewing medication intake history.
 """
 
 import json
+import csv
 from datetime import datetime
 
 DATA_FILE = 'history.json'
@@ -70,42 +64,55 @@ class MedicationHistoryTracker:
             note = f" ({e['note']})" if e['note'] else ''
             print(f"{e['timestamp']}: {e['name']} {mark}{note}")
 
+    def show_by_name(self, name: str) -> None:
+        """Print history for a specific medication name."""
+        matches = [e for e in self.history if e['name'].lower() == name.lower()]
+        if not matches:
+            print(f"No entries found for '{name}'.")
+            return
+        for e in matches:
+            mark = '✓' if e['taken'] else '✗'
+            note = f" ({e['note']})" if e['note'] else ''
+            print(f"{e['timestamp']}: {e['name']} {mark}{note}")
+
+    def export_csv(self, filename='medication_log.csv'):
+        """Export history to a CSV file."""
+        if not self.history:
+            print("No history to export.")
+            return
+        with open(filename, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=['timestamp', 'name', 'taken', 'note'])
+            writer.writeheader()
+            writer.writerows(self.history)
+        print(f"Exported history to {filename}")
+
 
 def main():
     tracker = MedicationHistoryTracker()
 
     while True:
-        cmd = input("\n[L]og dose  [S]how history  [Q]uit > ").strip().lower()
+        cmd = input("\n[L]og dose  [S]how history  [F]ilter by med  [E]xport CSV  [Q]uit > ").strip().lower()
         if cmd in ('q', 'quit'):
             break
-        if cmd in ('l', 'log'):
+        elif cmd in ('l', 'log'):
             name = input("Medication name: ").strip()
-            taken = input("Taken? (y/n): ").strip().lower() == 'y'
+            taken_input = input("Taken? (y/n): ").strip().lower()
+            while taken_input not in ('y', 'n'):
+                taken_input = input("Invalid. Taken? (y/n): ").strip().lower()
+            taken = taken_input == 'y'
             note = input("Note (optional): ").strip()
             tracker.log(name, taken, note)
         elif cmd in ('s', 'show'):
             print("\n=== Medication History ===")
             tracker.show()
+        elif cmd in ('f', 'filter'):
+            name = input("Medication name to filter by: ").strip()
+            print(f"\n=== History for {name} ===")
+            tracker.show_by_name(name)
+        elif cmd in ('e', 'export'):
+            tracker.export_csv()
         else:
-            print("Unknown command. Choose L, S, or Q.")
+            print("Unknown command. Choose L, S, F, E, or Q.")
 
 if __name__ == '__main__':
     main()
-
-#can ya'll see this
-
-#yes 
-
-
-class SendReminders:
-    def __init__(self, user):
-        self.user = user
-        self.schedule = self.generate_schedule()
-## Function that generate schedules for multiple different medications or just one large schedule
-## function with an If statement that checks if reminder should be sent
-
-    def send(self, reminder):
-        user = reminder['user']
-        med = reminder['medication']
-        print(f"Hi {user}, time to take {med}.")
-    ## Maybe make it more specific like their dose?

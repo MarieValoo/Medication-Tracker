@@ -1,6 +1,7 @@
 from datetime import datetime
 from medication import Medication
-from health_journal import HealthJournal
+from health_journal import MedicationHistoryTracker
+from interaction_db import interaction_db
 
 class User:
     """
@@ -21,7 +22,7 @@ class User:
         """
         self.name = name
         self.medications: list[Medication] = []
-        self.journal = HealthJournal()
+        self.journal = MedicationHistoryTracker()
     
     def add_medication(self, medication: Medication):
         """
@@ -48,20 +49,75 @@ class User:
                 return True
         return False
     
+    def find_medication(self, medication_name: str):
+        """
+        Finds a medication in the user's list by name.
+        
+        Args:
+            medication_name (str): The name of the medication to find.
+            
+        Returns:
+            The medication object if found, None otherwise. 
+        """
+        for med in self.medications:
+            if med.name.lower() == medication_name.lower():
+                return med
+        return None
+    
     def take_medication(self, medication_name: str, taken: bool = True, note: str = ""):
         """
-        Logs the intake of a medication in the user's medication history.
-
+        Records that a medication was taken or missed.
+        
         Args:
-            medication_name (str): The name of the medication being taken or missed.
-            taken (bool): Indicates whether the medication was taken (True) or missed (False). Defaults to True.
-            note (str): Optional note to include with the log entry (e.g., side effects, reasons for missing). Defaults to empty string.
-
+            medication_name (str): The name of the medication being taken/missed.
+            taken (bool): Indicates whether the medication was taken (True) or missed (False).
+            note (str): Optional note to include (e.g., side effects).
+            
+        Returns:
+            bool: True if the medication was found and the action was recorded, False otherwise.
         """
-        med = next((m for m in self.medications if m.name.lower() == medication_name.lower()), None)
-        if med and taken:
-            med.remaining_doses = max(0, med.remaining_doses - 1)
-        self.journal.log(medication_name, taken, note)
+        medication = self.find_medication(medication_name)
+        
+        if medication:
+            # Record in journal
+            self.journal.log(medication_name, taken, note)
+            
+            # Update dose count if taken
+            if taken and medication.remaining_doses > 0:
+                medication.decrease_dose_count(1)
+            return True
+        return False
+
+    def check_all_interactions(self):
+        """
+        Checks and prints potential drug interactions among the user's medications.
+        """
+        print("\nChecking for drug interactions:")
+        reported_pairs = set() # Keep track of already-reported interactions
+        found = False # Marking a found interaction
+
+        for i, med in enumerate(self.medications):
+            others = self.medications[:i] + self.medications[i+1:]
+            for other in others:
+                # Try to find interaction info using both possible pair orders
+                pair = (med.name, other.name)
+                reverse_pair = (other.name, med.name)
+                interaction_info = interaction_db.get(pair) or interaction_db.get(reverse_pair)
+
+                if interaction_info:
+                    # Sort names to standardize key (so A+B is same as B+A)
+                    name1, name2 = sorted([med.name, other.name])
+                    key = f"{name1}+{name2}"
+
+                    # Only report each interaction once
+                    if key not in reported_pairs:
+                        reported_pairs.add(key)
+                        found = True
+                        # Print the interaction information
+                        print(f"- {name1} + {name2}: {interaction_info['description']} (Severity: {interaction_info['severity']})")
+
+        if not found:
+            print("No interactions found.")
     
     def get_next_dose_time(self) -> dict[str, tuple[str, datetime]]:
         """
