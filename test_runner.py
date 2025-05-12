@@ -33,3 +33,4 @@ for med_name, (formatted, dt_obj) in next_doses.items():
 
 # Show history
 user.journal.show()
+

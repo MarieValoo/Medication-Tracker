@@ -102,8 +102,12 @@ class HealthJournal:
                 frequency = information.get("frequency_per_day")
                 duration = information.get("duration")
                 
+                time = "times"
+                if frequency == 1:
+                    time = "time"
+                    
                 if dosage is not None and frequency is not None:
-                    text_container = text_container + " " + f"{dosage} of {medication} {frequency} times,"
+                    text_container = text_container + " " + f"{dosage} of {medication} {frequency} {time},"
                     
                 if duration == count: #if this is the last day to take a medication, remove it from medication_list after its last use
                     medication_list.remove(medication)

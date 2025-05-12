@@ -1,6 +1,6 @@
 from datetime import datetime
 from medication import Medication
-from health_journal import MedicationHistoryTracker
+from medication_history_tracker import MedicationHistoryTracker
 from interaction_db import interaction_db
 
 class User:
