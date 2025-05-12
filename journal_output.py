@@ -2,13 +2,11 @@
 #Marie Valouiski
 #INST326 Final Project
 
-from user import User 
-import re
+from user import User
+from medication import Medication 
 
 #create a function that takes in medications (list of medication objects) from User class and makes a list of dictionaries 
 #acceptable for HealthJournal class
-
-#ill probably add medications to input in init of HealthJournal
 
 
 class HealthJournal:
@@ -27,21 +25,18 @@ class HealthJournal:
         """populates medication_dict with medication_object_list containing medication objects in a format that's workable by the 
         journal_output function"""
         
-        assert self.medication_object_list == self.user.medications
+        #assert self.medication_object_list == self.user.medications
         
         for medication_object in self.medication_object_list:
             
-            med_match = re.compile("=(?:'([^']*)'|(\[.*?\])|(\d+))").finditer(medication_object)
-            for match in med_match:
-                name = match.group(1)
-                dosage = match.group(2)
-                frequency_per_day = match.group(3)
-                times = match.group(4)
-                duration = match.group(5)
-                remaining_doses = match.group(6)
-            
-            dict_input = f"{name}: {dosage: {{dosage}}, frequency_per_day: {{frequency_per_day}}, times: {{times}}, duration: {{duration}}, remaining_doses: {{remaining_doses}}}"
-            self.medication_dict.append(dict_input) 
+            name = medication_object.name
+            self.medication_dict[name] = {
+                "dosage": medication_object.dosage,
+                "frequency_per_day": medication_object.frequency_per_day,
+                "times": medication_object.times,
+                "duration": medication_object.duration,
+                "remaining_doses": medication_object.remaining_doses
+        }
     
     def missed_days(self):
         """takes in missed days from history class to take note of deviations user took from their medication schedule"""  
@@ -80,15 +75,16 @@ class HealthJournal:
         duration_list = []
         for details in self.medication_dict.values():
             duration = details.get("duration")
-            
             if duration > 100:
                 duration_list.append(100)
             else: 
                 duration_list.append(duration)
-                
-        final_day = max(duration_list) #finds the last day a medication(s) will be taken    
+        try:
+            final_day = max(duration_list) #finds the last day a medication(s) will be taken
+        except:
+            print(f"{self.medication_dict}")    
 
-        while count >= final_day:
+        while count < final_day:
             count += 1
             text_container = ""
             for medication, information in self.medication_dict.items():
@@ -116,10 +112,24 @@ class HealthJournal:
             text_container = text_container[:-1] + "." + "\n" + "\n"
             day_text.append(text_container)
             
+        day_text = "".join(day_text)
+        journal_text = "MY HEALTH JOURNAL - TAKEN MEDICATIONS: " + "\n"*3 + day_text
         with open("medication_journal", "w") as file:
-            file.write(day_text)
+            file.write(journal_text)
         
         print("File 'medication_journal' successfully created!")
                 
-
+if __name__=="__main__":
+    
+    user = User("Alice")
+    
+    med1 = Medication(name="Ibuprofen", dosage="100mg", frequency_per_day=1, times=["09:00"], duration=25, remaining_doses=12)
+    med2 = Medication(name="Lisinopril", dosage="200mg", frequency_per_day=2, times=["09:00", "21:00"], duration=30, remaining_doses=12)
+    user.add_medication(med1)
+    user.add_medication(med2)
+    
+    health_journal = HealthJournal(user.medications)
+    
+    health_journal.add_to_dict()
+    health_journal.journal_output()
 

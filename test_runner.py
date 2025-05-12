@@ -1,6 +1,7 @@
 # test_runner.py
 from user import User
 from medication import Medication
+from journal_output import HealthJournal
 import os
 
 # Delete or rename the old history file to start fresh
@@ -33,4 +34,6 @@ for med_name, (formatted, dt_obj) in next_doses.items():
 
 # Show history
 user.journal.show()
+
+
 
