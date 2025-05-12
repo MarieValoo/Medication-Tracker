@@ -38,32 +38,15 @@ class HealthJournal:
                 "remaining_doses": medication_object.remaining_doses
         }
     
-    def missed_days(self):
-        """takes in missed days from history class to take note of deviations user took from their medication schedule"""  
-        #just needs the DAY on which a medication is missed, and the NAME of the medication is missed. this could be in whatever 
-        #form you think is best, such as a list of tuples where the first index of the tuple is the day(int), and the second 
-        #index is the medciation name(str) that was missed on that day. it doesn't have to be like that just as long as 
-        #we have variables that store this information that I could use in the journal_output function
           
     def journal_output(self):
         """uses medication_dict to create text file of journal that considers all of the attributes, goes one medication at a time
         Attribute:
             self (medication_dict)
         Returns:
-            journal_output, a string that will be used to create the file medication_journal.txt
-        Will look something like this:
-        
-        “On Day {x}, you took {dosage} of medication {name} {frequency} times, {dosage} of medication {name} 
-        {frequency} times, {dosage} of medication {name} {frequency} times…
-
-        On Day {x+1}...”
-
-        Misses:
-        “On Day {x} you missed {name}, on day {x} you missed….”
+            journal_text, a string that will be used to create the file medication_journal.txt
+            medication_journal.txt, text file containing journal_text string
         """
-        
-        #assert type(self.medication_object) == Medication
-        #makes an assert statement that checks that the structure of the input is correct
         
         day_text = [] #where the journal f string texts will go
         medication_list = [] #where all medication names will go, once the duration of a medication goes to zero the medication name will be removed from the list
