@@ -2,6 +2,7 @@ import time
 from datetime import datetime
 
 class MedicationReminders:
+    """Manages and sends medication reminders to the user based on the medication schedule"""
     def __init__(self, user, medications):
         self.user = user
         self.medications = medications
