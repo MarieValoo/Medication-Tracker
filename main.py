@@ -43,6 +43,8 @@ def main():
 
     #run MedicationReminders class
     reminders = MedicationReminders(user=user, medications=[med1, med2])
+    reminders.set_reminder(med1, "08:30 AM")
+    reminders.set_reminder(med2, "09:00 AM and 09:00 PM")
     reminders.send_notifications()
 
     
