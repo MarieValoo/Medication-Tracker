@@ -25,7 +25,10 @@ class HealthJournal:
         """populates medication_dict with medication_object_list containing medication objects in a format that's workable by the 
         journal_output function"""
         
-        assert type(self.medication_object_list) == list
+        assert type(self.medication_object_list) == list #tests that medication_object_list is a list
+        
+        for med in self.medication_object_list: #tests that the objects within the list are Medication objects
+            assert type(med) == Medication
         
         for medication_object in self.medication_object_list:
             
